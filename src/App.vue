@@ -1,11 +1,17 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { ref } from 'vue';
+import AccountRecord from './components/AccountRecord.vue';
+import type { Account } from './types';
+
+const templateAccount = ref<Account>({
+  type: "local",
+  password: "1234",
+  login: "Test"
+})
+</script>
 
 <template>
-  <h1>You did it!</h1>
-  <p>
-    Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
-    documentation
-  </p>
+  <AccountRecord v-model="templateAccount" />
 </template>
 
 <style scoped></style>
