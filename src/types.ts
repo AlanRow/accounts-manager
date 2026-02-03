@@ -1,6 +1,7 @@
 export type AccountType = "ldap" | "local"
 
 interface BaseAccount {
+  id: string;
   marks?: Mark[];
   type: AccountType;
   login: string;

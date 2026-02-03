@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { computed, reactive, ref, watch } from 'vue';
-import { ElRow, ElCol, ElButton, ElInput, ElSelect, ElOption, ElFormItem, ElForm, type FormRules } from 'element-plus';
+import { computed, reactive, ref } from 'vue'
+import { ElRow, ElCol, ElButton, ElInput, ElSelect, ElOption, ElFormItem, ElForm, type FormRules } from 'element-plus'
 import { Delete as DeleteIcon } from "@element-plus/icons-vue"
 
-import type { Account, AccountType, Mark } from '@/types';
+import type { Account, AccountType, Mark } from '@/types'
 
 type FormData = {
   marks: string;
@@ -23,12 +23,13 @@ const props = defineProps<{
 
 // TODO: rewrite with validations later
 const emit = defineEmits<{
-  (e: "update:modelValue", value: Account): void; 
+  (e: "update:modelValue", value: Account): void;
+  (e: "remove"): void;
 }>()
 
 const formData = reactive<FormData>(
   convertAccountToFormData(props.modelValue)
-);
+)
 
 const hasPassword = computed(() => formData.type == "local")
 
@@ -57,15 +58,15 @@ const rules = reactive<FormRules<FormData>>({
   ] : [],
 })
 
-const formEl = ref<InstanceType<typeof ElForm> | null>(null);
+const formEl = ref<InstanceType<typeof ElForm> | null>(null)
 
 function submitForm() {
   formEl.value?.validate((valid) => {
     if (valid) {
-      const updatedAccount = convertFormDataToAccount(formData);
-      emit("update:modelValue", updatedAccount);
+      const updatedAccount = convertFormDataToAccount(formData)
+      emit("update:modelValue", updatedAccount)
     }
-  });
+  })
 }
 
 function convertAccountToFormData(account: Account): FormData {
@@ -79,6 +80,7 @@ function convertAccountToFormData(account: Account): FormData {
 
 function convertFormDataToAccount(formData: FormData): Account {
   const commonData = {
+    id: props.modelValue.id, // id не будет меняться в форме
     marks: parseLineToMarks(formData.marks),
     login: formData.login,
   }
@@ -119,7 +121,7 @@ function convertMarksToLine(marks: Mark[]): string {
       <!-- Можно было бы сделать через ElTag, что удобнее для юзера, но по тз это должна быть строка  -->
       <ElCol :span="8">
         <ElFormItem prop="marks">
-          <ElInput v-model="formData.marks" @change="submitForm" />
+          <ElInput v-model="formData.marks" placeholder="Метки (через ;)" @change="submitForm" />
         </ElFormItem>
       </ElCol>
       <!-- Тип -->
@@ -133,18 +135,18 @@ function convertMarksToLine(marks: Mark[]): string {
       <!-- Логин -->
       <ElCol :span="hasPassword ? 4 : 8">
         <ElFormItem prop="login">
-          <ElInput v-model="formData.login"  @change="submitForm" />
+          <ElInput v-model="formData.login" placeholder="Логин" @change="submitForm" />
         </ElFormItem>
       </ElCol>
       <!-- Пароль -->
       <ElCol v-if="hasPassword" :span="4">
         <ElFormItem prop="password">
-          <ElInput v-model="formData.password" type="password" show-password  @change="submitForm" />
+          <ElInput v-model="formData.password" placeholder="Пароль" type="password" show-password @change="submitForm" />
         </ElFormItem>
       </ElCol>
       <!-- Действия -->
       <ElCol :span="4">
-        <ElButton type="danger" :icon="DeleteIcon" />
+        <ElButton type="danger" :icon="DeleteIcon" @click="emit('remove')" />
       </ElCol>
     </ElRow>
   </ElForm>
