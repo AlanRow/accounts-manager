@@ -105,7 +105,7 @@ function parseLineToMarks(line: string): Mark[] {
   return line.split(MARKS_DELIMITER).map(text => ({ text }))
 }
 function convertMarksToLine(marks: Mark[]): string {
-  return marks.join(MARKS_DELIMITER)
+  return marks.map(({ text }) => text).join(MARKS_DELIMITER)
 }
 // TODO: finish formatting
 // function formatMarksLine(line: string): string {
