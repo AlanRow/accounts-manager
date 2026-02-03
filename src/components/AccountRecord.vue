@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, reactive, watch } from 'vue';
+import { computed, reactive, ref, watch } from 'vue';
 import { ElRow, ElCol, ElButton, ElInput, ElSelect, ElOption, ElFormItem, ElForm, type FormRules } from 'element-plus';
 import { Delete as DeleteIcon } from "@element-plus/icons-vue"
 
@@ -57,18 +57,15 @@ const rules = reactive<FormRules<FormData>>({
   ] : [],
 })
 
-watch(formData, () => {
-  const isValid = validate();
+const formEl = ref<InstanceType<typeof ElForm> | null>(null);
 
-  if (isValid) {
-    const updatedAccount = convertFormDataToAccount(formData);
-    emit("update:modelValue", updatedAccount);
-  }
-})
-
-function validate() {
-
-  return true;
+function submitForm() {
+  formEl.value?.validate((valid) => {
+    if (valid) {
+      const updatedAccount = convertFormDataToAccount(formData);
+      emit("update:modelValue", updatedAccount);
+    }
+  });
 }
 
 function convertAccountToFormData(account: Account): FormData {
@@ -116,19 +113,19 @@ function convertMarksToLine(marks: Mark[]): string {
 </script>
 
 <template>
-  <ElForm :model="formData" :rules="rules">
+  <ElForm ref="formEl" :model="formData" :rules="rules">
     <ElRow :gutter="10">
       <!-- Метки -->
       <!-- Можно было бы сделать через ElTag, что удобнее для юзера, но по тз это должна быть строка  -->
       <ElCol :span="8">
         <ElFormItem prop="marks">
-          <ElInput v-model="formData.marks" />
+          <ElInput v-model="formData.marks" @change="submitForm" />
         </ElFormItem>
       </ElCol>
       <!-- Тип -->
       <ElCol :span="4">
         <ElFormItem prop="type">
-          <ElSelect v-model="formData.type" placeholder="Тип учетной записи">
+          <ElSelect v-model="formData.type" placeholder="Тип учетной записи"  @change="submitForm">
             <ElOption v-for="(label, type) in ACCOUT_TYPE_LABELS" :key="type" :value="type" :label="label" />
           </ElSelect>
         </ElFormItem>
@@ -136,13 +133,13 @@ function convertMarksToLine(marks: Mark[]): string {
       <!-- Логин -->
       <ElCol :span="hasPassword ? 4 : 8">
         <ElFormItem prop="login">
-          <ElInput v-model="formData.login" />
+          <ElInput v-model="formData.login"  @change="submitForm" />
         </ElFormItem>
       </ElCol>
       <!-- Пароль -->
       <ElCol v-if="hasPassword" :span="4">
         <ElFormItem prop="password">
-          <ElInput v-model="formData.password" type="password" show-password />
+          <ElInput v-model="formData.password" type="password" show-password  @change="submitForm" />
         </ElFormItem>
       </ElCol>
       <!-- Действия -->

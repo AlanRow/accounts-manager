@@ -8,10 +8,14 @@ const templateAccount = ref<Account>({
   password: "1234",
   login: "Test"
 })
+
+function alertAccount(value: Account) {
+  alert(JSON.stringify(value, null, 2));
+}
 </script>
 
 <template>
-  <AccountRecord v-model="templateAccount" />
+  <AccountRecord v-model="templateAccount" @update:modelValue="alertAccount" />
 </template>
 
 <style scoped></style>
