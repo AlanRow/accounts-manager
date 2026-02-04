@@ -1,25 +1,15 @@
 <script setup lang="ts">
-import { v4 as uuidv4 } from 'uuid'
-import { ElMessage, ElMessageBox, ElButton, ElAlert } from 'element-plus'
-import { Plus as PlusIcon } from '@element-plus/icons-vue'
+import { ElMessage, ElMessageBox, ElButton, ElAlert } from "element-plus"
+import { Plus as PlusIcon } from "@element-plus/icons-vue"
 
-import AccountRecord from './components/AccountRecord.vue'
-import AccountRow from './components/AccountRow.vue'
+import AccountRecord from "./components/AccountRecord.vue"
+import AccountRow from "./components/AccountRow.vue"
 
-import { useAccountsStore } from './stores/accounts'
-import type { Account } from './types'
+import { useAccountsStore } from "./stores/accounts"
+import type { Account } from "./types"
+import { getNewAccount } from "./utils"
 
 const store = useAccountsStore()
-
-function getNewAccount(): Account {
-  return {
-    id: uuidv4(),
-    marks: [],
-    type: 'local',
-    login: '',
-    password: '',
-  }
-}
 
 function updateAccount(updatedAccount: Account) {
   store.updateAccount(updatedAccount)
@@ -30,26 +20,26 @@ function addNewAccount() {
 }
 function removeAccount(accountId: string) {
   ElMessageBox.confirm(
-    'Вы уверены, что хотите удалить этот аккаунт?',
-    'Подтверждение удаления',
+    "Вы уверены, что хотите удалить этот аккаунт?",
+    "Подтверждение удаления",
     {
-      confirmButtonText: 'Удалить',
-      cancelButtonText: 'Отмена',
-      type: 'warning',
+      confirmButtonText: "Удалить",
+      cancelButtonText: "Отмена",
+      type: "warning",
     }
   ).then(() => {
     store.removeAccount(accountId)
     ElMessage({
-      type: 'success',
-      message: 'Аккаунт успешно удален',
+      type: "success",
+      message: "Аккаунт успешно удален",
     })
   })
 }
 </script>
 
 <template>
+  <!-- Можно вынести это в отдельный компонент по мере увеличения объема кода, но пока приемлемо и не стоит слишком дробить -->
   <div class="accounts-wrapper">
-    <!-- TODO: move to component? -->
     <div class="accounts-header">
       <h2 class="accounts-title">
         Учетные записи
@@ -68,7 +58,6 @@ function removeAccount(accountId: string) {
         Нет учетных записей
       </div>
       <div v-else>
-        <!-- TODO: move to simple component -->
         <AccountRow has-password>
           <template #marks>
             <h3>Метки</h3>

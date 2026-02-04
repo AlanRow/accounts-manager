@@ -20,6 +20,13 @@ export interface LocalAccount extends BaseAccount {
 
 export type Account = LdapAccount | LocalAccount;
 
+export type AccountFormData = {
+  marks: string;
+  type: AccountType;
+  login: string;
+  password: string;
+}
+
 export interface Mark {
   text: string;
 }

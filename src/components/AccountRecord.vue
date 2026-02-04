@@ -1,18 +1,12 @@
 <script setup lang="ts">
-import { computed, reactive, ref } from 'vue'
-import { ElButton, ElInput, ElSelect, ElOption, ElFormItem, ElForm, type FormRules } from 'element-plus'
+import { computed, reactive, ref } from "vue"
+import { ElButton, ElInput, ElSelect, ElOption, ElFormItem, ElForm, type FormRules } from "element-plus"
 import { Delete as DeleteIcon } from "@element-plus/icons-vue"
 
-import type { Account, AccountType, Mark } from '@/types'
+import type { Account, AccountFormData, AccountType } from "@/types"
+import { convertAccountToFormData, convertFormDataToAccount } from "@/utils"
 
-import AccountRow from './AccountRow.vue'
-
-type FormData = {
-  marks: string;
-  type: AccountType;
-  login: string;
-  password: string;
-}
+import AccountRow from "./AccountRow.vue"
 
 const ACCOUT_TYPE_LABELS: Record<AccountType, string> = {
   "local": "Локальная",
@@ -23,19 +17,19 @@ const props = defineProps<{
   modelValue: Account;
 }>()
 
-// TODO: rewrite with validations later
 const emit = defineEmits<{
   (e: "update:modelValue", value: Account): void;
   (e: "remove"): void;
 }>()
 
-const formData = reactive<FormData>(
+const formData = reactive<AccountFormData>(
   convertAccountToFormData(props.modelValue)
 )
 
 const hasPassword = computed(() => formData.type == "local")
 
-const rules = reactive<FormRules<FormData>>({
+/** по мере разрастания кода можно вынести эти правила в отдельный файл, но пока это не рационально */
+const rules = reactive<FormRules<AccountFormData>>({
   marks: [
     { required: true, message: "Обязательно для заполнения", trigger: "blur" },
     { max: 50, message: "Максимальная длина 50 символов", trigger: "blur" },
@@ -65,55 +59,11 @@ const formEl = ref<InstanceType<typeof ElForm> | null>(null)
 function submitForm() {
   formEl.value?.validate((valid) => {
     if (valid) {
-      const updatedAccount = convertFormDataToAccount(formData)
+      const updatedAccount = convertFormDataToAccount(props.modelValue.id, formData)
       emit("update:modelValue", updatedAccount)
     }
   })
 }
-
-function convertAccountToFormData(account: Account): FormData {
-  return {
-    marks: convertMarksToLine(account.marks ?? []),
-    type: account.type,
-    login: account.login,
-    password: account.password ?? "",
-  }
-}
-
-function convertFormDataToAccount(formData: FormData): Account {
-  const commonData = {
-    id: props.modelValue.id, // id не будет меняться в форме
-    marks: parseLineToMarks(formData.marks),
-    login: formData.login,
-  }
-  if (formData.type == "ldap") {
-    return {
-      ...commonData,
-      type: formData.type,
-      password: null,
-    }
-  } else {
-    return {
-      ...commonData,
-      type: formData.type,
-      password: formData.password,
-    }
-  }
-}
-
-const MARKS_DELIMITER = ";"
-
-function parseLineToMarks(line: string): Mark[] {
-  return line.split(MARKS_DELIMITER).map(text => ({ text }))
-}
-function convertMarksToLine(marks: Mark[]): string {
-  return marks.map(({ text }) => text).join(MARKS_DELIMITER)
-}
-// TODO: finish formatting
-// function formatMarksLine(line: string): string {
-// // добавляем в метки пробелы для красоты
-//   return line.replace(/;([a-zA-Z0-9_])/, )
-// }
 </script>
 
 <template>
