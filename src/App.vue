@@ -103,7 +103,8 @@ body {
 <style scoped lang="scss">
 .accounts-wrapper {
   box-sizing: border-box;
-  height: 100%;
+  min-height: 100%;
+  height: fit-content;
   padding: 24px;
   border: 2px solid var(--el-border-color-light);
   border-radius: 8px;
@@ -127,7 +128,7 @@ h2.accounts-title {
 
 /** make it scrollable */
 .accounts-rows {
-  // overflow-y: auto;
+  flex-grow: 1;
 }
 
 .empty-accounts-list {
