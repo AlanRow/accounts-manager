@@ -11,16 +11,16 @@ defineProps<{
     <ElCol :span="8">
       <slot name="marks"></slot>
     </ElCol>
-    <ElCol :span="4">
+    <ElCol :span="6">
       <slot name="type"></slot>
     </ElCol>
-    <ElCol :span="hasPassword ? 4 : 8">
+    <ElCol :span="hasPassword ? 5 : 9">
       <slot name="login"></slot>
     </ElCol>
     <ElCol v-if="hasPassword" :span="4">
       <slot name="password"></slot>
     </ElCol>
-    <ElCol :span="4">
+    <ElCol :span="1">
       <slot name="actions"></slot>
     </ElCol>
   </ElRow>
