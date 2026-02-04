@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { computed, reactive, ref } from 'vue'
-import { ElRow, ElCol, ElButton, ElInput, ElSelect, ElOption, ElFormItem, ElForm, type FormRules } from 'element-plus'
+import { ElButton, ElInput, ElSelect, ElOption, ElFormItem, ElForm, type FormRules } from 'element-plus'
 import { Delete as DeleteIcon } from "@element-plus/icons-vue"
 
 import type { Account, AccountType, Mark } from '@/types'
+
+import AccountRow from './AccountRow.vue'
 
 type FormData = {
   marks: string;
@@ -116,39 +118,34 @@ function convertMarksToLine(marks: Mark[]): string {
 
 <template>
   <ElForm ref="formEl" :model="formData" :rules="rules">
-    <ElRow :gutter="10">
-      <!-- Метки -->
-      <!-- Можно было бы сделать через ElTag, что удобнее для юзера, но по тз это должна быть строка  -->
-      <ElCol :span="8">
+    <AccountRow :has-password="hasPassword">
+      <template #marks>
+        <!-- Можно было бы сделать через ElTag, что удобнее для юзера, но по тз это должна быть строка  -->
         <ElFormItem prop="marks">
           <ElInput v-model="formData.marks" placeholder="Метки (через ;)" @change="submitForm" />
         </ElFormItem>
-      </ElCol>
-      <!-- Тип -->
-      <ElCol :span="4">
+      </template>
+      <template #type>
         <ElFormItem prop="type">
           <ElSelect v-model="formData.type" placeholder="Тип учетной записи"  @change="submitForm">
             <ElOption v-for="(label, type) in ACCOUT_TYPE_LABELS" :key="type" :value="type" :label="label" />
           </ElSelect>
         </ElFormItem>
-      </ElCol>
-      <!-- Логин -->
-      <ElCol :span="hasPassword ? 4 : 8">
+      </template>
+      <template #login>
         <ElFormItem prop="login">
           <ElInput v-model="formData.login" placeholder="Логин" @change="submitForm" />
         </ElFormItem>
-      </ElCol>
-      <!-- Пароль -->
-      <ElCol v-if="hasPassword" :span="4">
+      </template>
+      <template #password>
         <ElFormItem prop="password">
           <ElInput v-model="formData.password" placeholder="Пароль" type="password" show-password @change="submitForm" />
         </ElFormItem>
-      </ElCol>
-      <!-- Действия -->
-      <ElCol :span="4">
+      </template>
+      <template #actions>
         <ElButton type="danger" :icon="DeleteIcon" @click="emit('remove')" />
-      </ElCol>
-    </ElRow>
+      </template>
+    </AccountRow>
   </ElForm>
 </template>
 

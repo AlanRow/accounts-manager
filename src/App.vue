@@ -1,16 +1,15 @@
 <script setup lang="ts">
 import { v4 as uuidv4 } from 'uuid'
-import { ElMessage, ElMessageBox, ElButton, ElRow, ElCol, ElAlert } from 'element-plus'
+import { ElMessage, ElMessageBox, ElButton, ElAlert } from 'element-plus'
 import { Plus as PlusIcon } from '@element-plus/icons-vue'
 
 import AccountRecord from './components/AccountRecord.vue'
+import AccountRow from './components/AccountRow.vue'
 
 import { useAccountsStore } from './stores/accounts'
 import type { Account } from './types'
 
 const store = useAccountsStore()
-
-/** TODO: save it to session storage */
 
 function getNewAccount(): Account {
   return {
@@ -70,21 +69,20 @@ function removeAccount(accountId: string) {
       </div>
       <div v-else>
         <!-- TODO: move to simple component -->
-        <ElRow :gutter="10">
-          <ElCol :span="8">
+        <AccountRow has-password>
+          <template #marks>
             <h3>Метки</h3>
-          </ElCol>
-          <ElCol :span="4">
+          </template>
+          <template #type>
             <h3>Тип записи</h3>
-          </ElCol>
-          <ElCol :span="4">
+          </template>
+          <template #login>
             <h3>Логин</h3>
-          </ElCol>
-          <ElCol :span="4">
+          </template>
+          <template #password>
             <h3>Пароль</h3>
-          </ElCol>
-          <ElCol :span="4" />
-        </ElRow>
+          </template>
+        </AccountRow>
       </div>
 
       <div class="accounts-rows">
@@ -126,13 +124,13 @@ body {
   display: flex;
   gap: 16px;
   align-items: center;
-  margin-bottom: 16px;
 }
 h2.accounts-title {
   font-size: 32px;
 }
 
 .accounts-list {
+  margin-top: 24px;
   display: flex;
   flex-direction: column;
   gap: 12px;
