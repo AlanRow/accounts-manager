@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { v4 as uuidv4 } from 'uuid'
-import { ElMessage, ElMessageBox, ElButton, ElRow, ElCol } from 'element-plus'
+import { ElMessage, ElMessageBox, ElButton, ElRow, ElCol, ElAlert } from 'element-plus'
 import { Plus as PlusIcon } from '@element-plus/icons-vue'
 
 import AccountRecord from './components/AccountRecord.vue'
@@ -56,6 +56,13 @@ function removeAccount(accountId: string) {
         Учетные записи
       </h2>
       <ElButton type="primary" :icon="PlusIcon" @click="addNewAccount" />
+    </div>
+    <div>
+      <ElAlert
+        type="warning"
+        title="Для указания меток для одной пары логин/пароль используйте разделитель ;"
+        :closable="false"
+      />
     </div>
     <div class="accounts-list">
       <div v-if="store.accounts.length === 0" class="empty-accounts-list">
